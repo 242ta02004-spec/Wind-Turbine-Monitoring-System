@@ -1,1 +1,0 @@
-# Wind-Turbine-Monitoring-System

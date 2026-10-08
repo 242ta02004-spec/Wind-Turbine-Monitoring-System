@@ -1,0 +1,78 @@
+
+# Wind Turbine Monitoring System
+# EEE Mini Project - Python Simulation
+
+import random
+import time
+
+RATED_POWER_KW = 100.0
+RATED_WIND_SPEED = 12.0
+CUT_IN_SPEED = 3.0
+CUT_OUT_SPEED = 25.0
+MAX_READINGS = 10
+
+
+def calculate_power(wind_speed):
+    """Estimate turbine power using a simplified model."""
+    if wind_speed < CUT_IN_SPEED or wind_speed >= CUT_OUT_SPEED:
+        return 0.0
+
+    # Simplified cubic relationship, capped at rated power
+    power = RATED_POWER_KW * (
+        wind_speed / RATED_WIND_SPEED
+    ) ** 3
+
+    return min(power, RATED_POWER_KW)
+
+
+def monitor_turbine():
+    print("\n" + "=" * 45)
+    print("       WIND TURBINE MONITORING")
+    print("=" * 45)
+
+    total_energy_kwh = 0.0
+
+    for reading in range(1, MAX_READINGS + 1):
+
+        # Simulated sensor readings
+        wind_speed = random.uniform(0, 28)
+        rpm = random.uniform(0, 1800)
+        temperature = random.uniform(20, 90)
+
+        power_kw = calculate_power(wind_speed)
+
+        # Each reading represents one minute
+        energy_kwh = power_kw / 60.0
+        total_energy_kwh += energy_kwh
+
+        # Determine operating status
+        if wind_speed >= CUT_OUT_SPEED:
+            status = "STOP - HIGH WIND"
+        elif wind_speed < CUT_IN_SPEED:
+            status = "STANDBY - LOW WIND"
+        elif temperature > 75:
+            status = "WARNING - HIGH TEMPERATURE"
+        else:
+            status = "OPERATING"
+
+        print(f"\nReading: {reading}")
+        print("-" * 45)
+        print(f"Wind Speed       : {wind_speed:.2f} m/s")
+        print(f"Rotor Speed      : {rpm:.2f} RPM")
+        print(f"Temperature      : {temperature:.2f} C")
+        print(f"Generated Power  : {power_kw:.2f} kW")
+        print(f"Energy This Minute: {energy_kwh:.3f} kWh")
+        print(f"Operating Status : {status}")
+        print("-" * 45)
+
+        time.sleep(1)
+
+    print("\nMonitoring completed.")
+    print(f"Estimated Energy: {total_energy_kwh:.3f} kWh")
+
+
+if __name__ == "__main__":
+    try:
+        monitor_turbine()
+    except KeyboardInterrupt:
+        print("\nMonitoring stopped by user.")
